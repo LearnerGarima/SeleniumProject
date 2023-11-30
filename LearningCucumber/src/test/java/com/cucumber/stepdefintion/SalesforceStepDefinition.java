@@ -1,70 +1,180 @@
 package com.cucumber.stepdefintion;
 
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.When;
-import io.cucumber.java.en.Then;
+import java.time.Duration;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.By;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 
 public class SalesforceStepDefinition {
-	WebDriver driver;
 
-	@Given("I am on the Salesforce login page")
-	public void OnSalesforceLoginPage() {
-		//WebDriver driver;
+	 private WebDriver driver;
+
+	@FindBy(xpath = "//*[@id=\"username\"]")
+	public WebElement username;
+	
+	@FindBy(id = "password")
+	public WebElement password;
+	
+	@FindBy(xpath = "//*[@id=\"error\"]")
+	public WebElement wrongPassword;
+	
+	@FindBy(id = "Login")
+	public WebElement loginButton;
+	
+	@FindBy(xpath = "//*[@id=\"rememberUn\"]")
+	public WebElement rememberMe;
+	
+	@FindBy(xpath = "//*[@id=\"error\"]")
+	public WebElement errorMessage; //*[@id="error"]
+	
+	@FindBy(xpath = "//*[@id=\"forgot_password_link\"]") 
+	public WebElement forgotPassword;
+	
+	@FindBy(id = "un")
+	public WebElement forgotUserName;
+	
+	@FindBy(id = "//a[text()='Return to Login']")
+	public WebElement returnToLoginButton;
+	
+	@FindBy(id = "userNavLabel")
+	public WebElement userMenu;
+	
+	@FindBy(xpath =  "//*[@id=\"userNav-menuItems\"]/a[5]")
+	public WebElement logout;
+	
+	
+	@Given("User login page is launched")
+	public void user_login_page_is_launched() {
+	    // Write code here that turns the phrase above into concrete actions
+//	    throw new io.cucumber.java.PendingException();
 		driver = new ChromeDriver();
-		driver.get("https://login.salesforce.com/");
-
+        driver.get("https://login.salesforce.com");
+        PageFactory.initElements(driver, this);
 	}
 
-	@When("I enter valid username  and I enter valid password and I click the login button")
-	public void i_enter_valid_password() throws InterruptedException {
-		// Write code here that turns the phrase above into concrete actions
-		driver.findElement(By.id("username")).sendKeys("garimas@tekarch.com");
-		driver.findElement(By.id("password")).sendKeys("@Bhadauria4");
-		WebElement login_attempt = driver.findElement(By.xpath("//input[@id='Login']"));
-		login_attempt.click();
-		//Thread.sleep(5000);
-		System.out.println("logged in");
-		// throw new io.cucumber.java.PendingException();
+	@When("Username enters username field")
+	public void username_enters_username_field(String usernameText) {
+	    // Write code here that turns the phrase above into concrete actions
+//	    throw new io.cucumber.java.PendingException();
+		 WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+	     wait.until(ExpectedConditions.visibilityOf(username)).sendKeys(usernameText);
+	       
 	}
 
-	/*@When("I enter invalid username")
-	public void i_enter_invalid_username() throws InterruptedException {
-		// Write code here that turns the phrase above into concrete actions
-		driver.findElement(By.id("username")).sendKeys("Garima@tekarch");
-		driver.findElement(By.id("password")).sendKeys("@Bhadauria4");
-		WebElement login_attempt = driver.findElement(By.xpath("//input[@id='Login']"));
-		login_attempt.click();
-		Thread.sleep(2000);
-		// throw new io.cucumber.java.PendingException();
+	@When("Password field is empty")
+	public void password_field_is_empty(String passwordText) {
+	    // Write code here that turns the phrase above into concrete actions
+//	    throw new io.cucumber.java.PendingException();
+		password.sendKeys(passwordText);
+		
 	}
 
-	@Then("I should see an error message indicating invalid username")
-	public void i_should_see_an_error_message_indicating_invalid_username() {
-		// Write code here that turns the phrase above into concrete actions
-		System.out.println("Invalid username");
-		throw new io.cucumber.java.PendingException();
+	@When("login button is clicked")
+	public void login_button_is_clicked() {
+		loginButton.click();
 	}
 
-	@When("I enter invalid password")
-	public void i_enter_invalid_password() throws InterruptedException {
-		// Write code here that turns the phrase above into concrete actions
-		driver.findElement(By.id("username")).sendKeys("garimas@tekarch.com");
-		driver.findElement(By.id("password")).sendKeys("Abc1234");
-		WebElement login_attempt = driver.findElement(By.xpath("//input[@id='Login']"));
-		login_attempt.click();
-		Thread.sleep(5000);
-		// throw new io.cucumber.java.PendingException();
-	} */
-
-	@Then("I should be logged in to the Salesforce account")
-	public void i_should_see_an_error_message_indicating_invalid_password() {
-		// Write code here that turns the phrase above into concrete actions
-		System.out.println("log successfully");
-		// throw new io.cucumber.java.PendingException();
-
+	@Then("Error msg Displayed on login page")
+	public void error_msg_displayed_on_login_page() {
+		String expectedErrorMessage = "Please enter your password";
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        WebElement errorMsg = wait.until(ExpectedConditions.visibilityOf(errorMessage));
+        String actualErrorMessage = errorMsg.getText();
+//        Assert.assertEquals(actualErrorMessage, expectedErrorMessage);
 	}
+
+//	@Then("close the browser")
+//	public void close_the_browser() throws InterruptedException {
+//		Thread.sleep(3000);
+//        driver.quit();
+//	}
+	
+	@When("{string}")
+	public void string(String usernameText) {
+	    // Write code here that turns the phrase above into concrete actions
+//	    throw new io.cucumber.java.PendingException();
+		 WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+	     wait.until(ExpectedConditions.visibilityOf(username)).sendKeys(usernameText);
+	}
+	
+	@When("Enter {string}")
+	public void enter(String usernameText) {
+		
+		 WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+	     wait.until(ExpectedConditions.visibilityOf(username)).sendKeys(usernameText);
+	}
+
+	@When("clear {string}")
+	public void clear(String passwordText) {
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+		password.sendKeys(passwordText);
+	}
+	
+	
+	
+	@When("Clicks on Forget password link")
+	public void clicks_on_forget_password_link() {
+	    forgotPassword.click();
+	}
+
+	@Then("Forget password page should be display")
+	public void forget_password_page_should_be_display() {
+	    
+	}
+	
+	
+	
+	@When("Enter {string} and valid  {string}")
+	public void enter_and_valid(String usernameText, String passwordText) {
+		 WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+	     wait.until(ExpectedConditions.visibilityOf(username)).sendKeys(usernameText);
+	     wait.until(ExpectedConditions.visibilityOf(password)).sendKeys(passwordText);
+	}
+
+	@When("Clicks on Login button")
+	public void clicks_on_login_button() {
+	    loginButton.click();
+	}
+
+	@Then("Home page should be display")
+	public void home_page_should_be_display() {
+	    
+	}
+	
+	
+	
+	@When("Check Remember me checkbox")
+	public void check_remember_me_checkbox() {
+	   rememberMe.click();
+	}
+
+	
+	
+	@When("Click on User Menu")
+	public void click_on_user_menu() {
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+	    userMenu.click();
+	}
+
+	@When("Click Logout")
+	public void click_logout() {
+		 WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+	     logout.click();
+	}
+
+	@Then("Should be logout")
+	public void should_be_logout() {
+	   
+	}
+
 }
